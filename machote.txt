@@ -1,0 +1,124 @@
+/*
+
+
+
+const Discord = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
+const { Permissions } = require("discord.js");
+
+module.exports = {
+	name: "comando",
+	description: "Descripcion",
+
+	async execute(client, interaction){
+		
+	}
+}
+
+
+*/
+
+
+
+/*
+client.on("interactionCreate", async (interaction) => {
+    if (!interaction.isButton()) return;
+
+    const everyone = interaction.guild.roles.cache.find(r => r.name === "@everyone");
+    const staffRoleId = "1239347445385658500";
+    const category = "1241492181605285919"; // Reemplaza con el ID real del canal padre
+
+    async function createTicket(interaction, category, color) {
+        try {
+            const channel = await interaction.guild.channels.create({
+                name: `ticket-${interaction.user.username}`,
+                type: 0, // Tipo de canal: 0 para canal de texto
+                parent: category,
+                permissionOverwrites: [
+                    {
+                        id: interaction.guild.id,
+                        deny: [PermissionsBitField.Flags.ViewChannel],
+                    },
+                    {
+                        id: interaction.user.id,
+                        deny: [PermissionsBitField.Flags.ViewChannel],
+                    },
+                    {
+                        id: staffRoleId,
+                        deny: [PermissionsBitField.Flags.ViewChannel],
+                    }
+                ]
+            });
+
+
+            const embed = {
+                color: 0x0099ff,
+                title: 'Tu ticket',
+                url: 'https://discord.js.org',
+                author: {
+                    name: 'LaFinca',
+                    icon_url: 'https://i.imgur.com/AfFp7pu.png',
+                    url: 'https://discord.js.org',
+                },
+            };
+    
+            const cerrar = new ButtonBuilder()
+                .setCustomId('closeTicket')
+                .setLabel('Cerrar Ticket')
+                .setStyle(4);
+    
+            const row = new ActionRowBuilder()
+                .addComponents(cerrar);
+    
+            await channel.send({ embeds: [embed], components: [row], content: `<@&${staffRoleId}> <@${interaction.user.id}>` });
+            await interaction.reply({ content: `Tu Ticket ha sido generado!`, ephemeral: true });
+        } catch (error) {
+            console.error("Error al crear el ticket: ", error);
+            await interaction.reply({ content: `Hubo un error al crear el ticket.`, ephemeral: true });
+        }
+    }
+
+    switch (interaction.customId) {
+        case "ayuda":
+            await createTicket(interaction, category, "#8D92D");
+            break;
+        case "otros":
+            await createTicket(interaction, category, "#B2ACAC");
+            break;
+        case "bug":
+            await createTicket(interaction, category, "#FF0000");
+            break;
+        case "closeTicket":
+            await interaction.channel.delete();
+            break;
+    }
+});
+
+
+client.on("interactionCreate", async (interaction) => {
+    if (!interaction.isButton()) return;
+
+    const modal = new ModalBuilder()
+    .setCustomId("datos")
+    .setTitle("Datos")
+
+    const nombre = new TextInputBuilder()
+    .setCustomId("nombre")
+    .setLabel("Nombre")
+    .setStyle(TextInputStyle.Short)
+
+    const problema = new TextInputBuilder()
+    .setCustomId("problema")
+    .setLabel("Detalla tu problema")
+    .setStyle(TextInputStyle.Paragraph)
+
+    const row = new ActionRowBuilder()
+    .addComponents(nombre)
+
+    const row2 = new ActionRowBuilder()
+    .addComponents(problema)
+
+    modal.addComponents(row, row2)
+
+    interaction.showModal(modal)
+});
